@@ -38,7 +38,7 @@ class bdist_wheel(_bdist_wheel):
         self.root_is_pure = False
 
 
-setuptools.setup(name='euler2-gl',
+setuptools.setup(name='t-euler2-gl',
                  version='1.0.0',
                  description='A toolset for network representation learning.',
                  url='https://github.com/alibaba/euler',

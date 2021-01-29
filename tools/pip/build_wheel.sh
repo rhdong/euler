@@ -16,10 +16,10 @@
 
 set -e
 
-TF_VERSION="1.12.0"
+TF_VERSION="1.15.2"
 
 SCRIPT_DIR=$(dirname "$0")
 PROJECT_DIR="$SCRIPT_DIR/../.."
 cd "$PROJECT_DIR"
 
-python tools/pip/setup.py bdist_wheel --python-tag cp27 -p manylinux1_x86_64 --tf_version "$TF_VERSION"
+python tools/pip/setup.py bdist_wheel --python-tag cp36 -p manylinux1_x86_64 --tf_version "$TF_VERSION"
