@@ -13,9 +13,9 @@
 # limitations under the License.
 # ==============================================================================
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+
+
+
 
 import json
 import sys
@@ -202,7 +202,7 @@ class Converter(object):
         new_data = []
         while len(data) > 0:
             for v in data:
-                if isinstance(v, unicode):
+                if isinstance(v, str):
                     result.append(v)
                 else:
                     for k in v:
@@ -217,9 +217,10 @@ class Converter(object):
                 exit(1)
             cur_dir = os.path.join(self.output_dir, 'Index', item[0])
             mkdirs(cur_dir)
-            f = open(os.path.join(cur_dir, 'meta'), 'w')
-            s = ''
+            f = open(os.path.join(cur_dir, 'meta'), 'wb')
+            s = b''
             if item[3] == 'hash_index':
+                print("=============", type(s), type(struct.pack('i', 0)))
                 s += struct.pack('i', 0)
             elif item[3] == 'range_index':
                 s += struct.pack('i', 1)
@@ -241,7 +242,7 @@ class Converter(object):
             new_data[item[0]][0].append(item[1])
             new_data[item[0]][1].append(item[2])
 
-        s = ''
+        s = b''
         for key in new_data:
             s += write_correct_data(valueType, key)
             # ids vector
@@ -281,7 +282,7 @@ class Converter(object):
         return s
 
     def write_neighbor_data(self, valueType, idType, data):
-        s = ''
+        s = b''
         for key in data:
             s += write_correct_data(idType, key)
             s += self.write_range_data(valueType, idType, data[key])
@@ -289,7 +290,7 @@ class Converter(object):
 
     def write_index_data(self, index_data, i):
         for key in index_data:
-            s = ''
+            s = b''
             item = key.split(':')
             if item[3] == 'hash_index':
                 s += self.write_hash_data(item[1], item[2], index_data[key])
@@ -304,7 +305,7 @@ class Converter(object):
                                 'Index',
                                 name,
                                 self.pref + '_%d.dat' % (i))
-            f = open(path, 'w')
+            f = open(path, 'wb')
             f.write(s)
             f.close()
 

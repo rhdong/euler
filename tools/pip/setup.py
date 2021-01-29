@@ -29,7 +29,7 @@ else:
     tf_version = tf.VERSION
 
 print(tf_version)
-required_packages = ['tensorflow=={}'.format(tf_version), 'tqdm', 'scipy==1.1.0', 'networkx==1.11', 'scikit-learn==0.19.1']
+required_packages = ['ttensorflow=={}'.format(tf_version), 'tqdm', 'scipy==1.1.0', 'networkx==1.11', 'scikit-learn==0.19.1']
 
 
 class bdist_wheel(_bdist_wheel):

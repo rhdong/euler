@@ -7,11 +7,17 @@ ENDIF(BUILD_COVERAGE)
 
 execute_process(COMMAND python -c "import tensorflow as tf; print(tf.sysconfig.get_lib())" OUTPUT_VARIABLE TF_LIB_DIR)
 execute_process(COMMAND python -c "import tensorflow as tf; print(tf.sysconfig.get_include())" OUTPUT_VARIABLE TF_INC_DIR)
+execute_process(COMMAND python -c "import site; print(';'.join(site.getsitepackages()))" OUTPUT_VARIABLE SITE_LIST)
+set(TF_INC_DIRs "")
+foreach(item ${SITE_LIST})
+  list(APPEND TF_INC_DIRs "${item}/tensorflow_core/include/")
+endforeach()
+message("${TF_INC_DIRs}")
 
 string(REGEX REPLACE "\n$" "" TF_INC_DIR  "${TF_INC_DIR}")
 string(REGEX REPLACE "\n$" "" TF_LIB_DIR  "${TF_LIB_DIR}")
 
-include_directories(SYSTEM ${TF_INC_DIR})
+include_directories(SYSTEM ${TF_INC_DIRs})
 
 find_library(
   TF_FRAMEWORK
