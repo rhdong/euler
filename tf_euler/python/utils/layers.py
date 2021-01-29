@@ -124,19 +124,22 @@ class Embedding(Layer):
     def __init__(self,
                  max_id,
                  dim,
+                 devices=None,
                  initializer=lambda:
                      tf.truncated_normal_initializer(stddev=0.1),
                  **kwargs):
         super(Embedding, self).__init__(**kwargs)
         self.max_id = max_id
         self.dim = dim
+        self.devices = devices
         self.initializer = initializer
 
     def build(self, input_shape):
-        self.embeddings = tf.get_variable(
+        self.embeddings = tf.dynamic_embedding.get_variable(
             'embeddings',
-            shape=[self.max_id + 1, self.dim],
-            initializer=self.initializer())
+            devices=self.devices,
+            initializer=self.initializer(),
+            dim=self.dim)
         self.built = True
 
     def call(self, inputs):
@@ -145,7 +148,7 @@ class Embedding(Layer):
         output_shape = shape.concatenate(self.dim)
         output_shape = [d if d is not None else -1
                         for d in output_shape.as_list()]
-        return tf.reshape(tf.nn.embedding_lookup(self.embeddings, inputs),
+        return tf.reshape(tf.dynamic_embedding.embedding_lookup(self.embeddings, inputs),
                           output_shape)
 
 
@@ -156,16 +159,17 @@ class SparseEmbedding(Embedding):
     def __init__(self,
                  max_id,
                  dim,
+                 devices=None,
                  initializer=lambda: tf.truncated_normal_initializer(
                      stddev=0.0002),
                  combiner='sum',
                  **kwargs):
         super(SparseEmbedding, self).__init__(
-            max_id=max_id, dim=dim, initializer=initializer, **kwargs)
+            max_id=max_id, dim=dim, devices=devices, initializer=initializer, **kwargs)
         self.combiner = combiner
 
     def call(self, inputs):
-        return tf.nn.embedding_lookup_sparse(self.embeddings, inputs, None,
+        return tf.dynamic_embedding.embedding_lookup_sparse(self.embeddings, inputs, None,
                                              combiner=self.combiner)
 
 
